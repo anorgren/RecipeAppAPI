@@ -22,8 +22,7 @@ class PublicTagsApiTests(TestCase):
         """test that login is required for retrieving tags"""
         response = self.client.get(TAGS_URL)
 
-        self.assertEqual(response.status_code,
-        status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class PrivateTagsApiTests(TestCase):
@@ -38,7 +37,7 @@ class PrivateTagsApiTests(TestCase):
         self.client.force_authenticate(self.user)
 
     def test_retrieve_tags(self):
-        """Test retrieving tags"""
+        """Test retrieving tags."""
         Tag.objects.create(user=self.user, name='Vegan')
         Tag.objects.create(user=self.user, name='Dessert')
 
@@ -71,15 +70,14 @@ class PrivateTagsApiTests(TestCase):
         self.client.post(TAGS_URL, payload)
 
         exists = Tag.objects.filter(
-            user = self.user,
-            name = payload['name']
-        ).exists()
+                                    user=self.user,
+                                    name=payload['name']
+                                    ).exists()
 
         self.assertTrue(exists)
 
     def test_create_tag_invalid(self):
         """Test creating a new tag with invalid payload"""
-        payload ={'name': ''}
+        payload = {'name': ''}
         res = self.client.post(TAGS_URL, payload)
-
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
